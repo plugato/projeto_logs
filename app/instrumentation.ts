@@ -1,4 +1,3 @@
-/*instrumentation.ts*/
 import * as opentelemetry from "@opentelemetry/sdk-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
@@ -6,8 +5,8 @@ import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { Resource } from "@opentelemetry/resources";
 
-import { registerInstrumentations } from "@opentelemetry/instrumentation";
-import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
+//import { registerInstrumentations } from "@opentelemetry/instrumentation";
+// import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
 // import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
 
 // const provider = new NodeTracerProvider();
@@ -19,16 +18,6 @@ import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
 //       // Optional hook to insert additional context to log object.
 //       logHook: (span, record, level) => {
 //         logger.info("teste");
-//         record["resource.service.name"] =
-//           provider.resource.attributes["service.name"];
-//       },
-
-//       // Log span context under custom keys
-//       // This is optional, and will default to "trace_id", "span_id" and "trace_flags" as the keys
-//       logKeys: {
-//         traceId: "traceId",
-//         spanId: "spanId",
-//         traceFlags: "traceFlags",
 //       },
 //     }),
 //     // other instrumentations
@@ -44,8 +33,10 @@ import {
 //   SimpleSpanProcessor,
 // } from "@opentelemetry/sdk-trace-base";
 import { logger } from "./pino-logger";
-const URL = "http://192.168.2.135:4318";
-const NAME = "projeto_logs2";
+import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
+import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
+const URL = "http://192.168.2.33:4318";
+const NAME = "projeto_logs3";
 
 const sdk = new opentelemetry.NodeSDK({
   resource: new Resource({

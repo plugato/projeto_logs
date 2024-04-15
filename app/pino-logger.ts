@@ -4,12 +4,12 @@ import pinoHttp from "pino-http";
 
 //const logger = pino();
 //import pino from "pino-http";
-const stream = createWriteStream({
-  url: "http://192.168.2.135:8082",
-  log: true,
-  interval: 100,
-  retries: 4,
-});
+// const stream = createWriteStream({
+//   url: "http://192.168.2.129:8082",
+//   log: true,
+//   interval: 100,
+//   retries: 4,
+// });
 
 // const logger = pinoHttp(
 //   {
