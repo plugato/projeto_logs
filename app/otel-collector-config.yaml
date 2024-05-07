@@ -1,0 +1,56 @@
+receivers:
+  otlp:
+    protocols:
+      http:        
+      grpc:
+  
+  # Add this section for Docker logs
+  filelog:
+    include: 
+      - "var/log/docker/teste/*.log"  # Specify the path to your log files 
+    start_at: beginning
+    include_file_path: true
+    include_file_name: false
+    
+
+
+processors:
+  batch:
+    send_batch_max_size: 1000
+    send_batch_size: 100
+    timeout: 10s
+
+exporters:
+  datadog:
+    api:
+      site: us5.datadoghq.com
+      key: c4b650f54edf3ef67034c8bd957a293a
+ 
+  file:  
+    path: ./app42_example.log
+    rotation:
+  logging:
+    loglevel: debug
+ 
+  otlp/elastic: 
+      endpoint: "https://a105033d7733493cb6f02e54a1dfc225.apm.us-central1.gcp.cloud.es.io:443"  
+      headers:
+            Authorization: "Bearer 8IFlHf336tmREM7pmM"  
+    
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [datadog,otlp/elastic]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [datadog,otlp/elastic]
+    logs:
+      receivers: [otlp,filelog]
+      processors: [batch]
+      exporters: [datadog,otlp/elastic]
+  telemetry:
+    logs:
+      level: debug
