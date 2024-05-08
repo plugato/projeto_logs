@@ -4,30 +4,6 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { Resource } from "@opentelemetry/resources";
-
-//import { registerInstrumentations } from "@opentelemetry/instrumentation";
-// import { PinoInstrumentation } from "@opentelemetry/instrumentation-pino";
-// import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
-
-// const provider = new NodeTracerProvider();
-// provider.register();
-
-// registerInstrumentations({
-//   instrumentations: [
-//     new PinoInstrumentation({
-//       // Optional hook to insert additional context to log object.
-//       logHook: (span, record, level) => {
-//         logger.info("teste");
-//       },
-//     }),
-//     // other instrumentations
-//   ],
-// });
-
-import {
-  SEMRESATTRS_SERVICE_NAME,
-  SEMRESATTRS_SERVICE_VERSION,
-} from "@opentelemetry/semantic-conventions";
 import {
   ConsoleSpanExporter,
   SimpleSpanProcessor,
@@ -36,36 +12,44 @@ import {
   LoggerProvider,
   SimpleLogRecordProcessor,
 } from "@opentelemetry/sdk-logs";
-
-//import { logger } from "./pino-logger";
 import { ExpressInstrumentation } from "@opentelemetry/instrumentation-express";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import pino from "pino";
 const { JaegerExporter } = require("@opentelemetry/exporter-jaeger");
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import * as logsAPI from "@opentelemetry/api-logs";
+import {
+  SEMRESATTRS_SERVICE_NAME,
+  SEMRESATTRS_SERVICE_VERSION,
+} from "@opentelemetry/semantic-conventions";
 
-const URL = "http://otel-collector:4318";
-const NAME = "projeto_logs3";
+// Constantes de configuração
+const OTLP_COLLECTOR_URL = "http://otel-collector:4318";
+const SERVICE_NAME = "projeto_logs3";
 
+// Criação de recursos
 const resource = new Resource({
-  [SEMRESATTRS_SERVICE_NAME]: NAME,
+  [SEMRESATTRS_SERVICE_NAME]: SERVICE_NAME,
   [SEMRESATTRS_SERVICE_VERSION]: "1.0",
 });
+
+// Configuração do provedor de logs
 const loggerProvider = new LoggerProvider({
   resource,
 });
-
 loggerProvider.addLogRecordProcessor(
   new SimpleLogRecordProcessor(
     new OTLPLogExporter({
-      url: "http://otel_collector:4318",
+      url: OTLP_COLLECTOR_URL,
       keepAlive: true,
     })
   )
 );
+
+// Criação do logger
 const loggerOtel = loggerProvider.getLogger("default");
 
+// Emite um log de teste
 loggerOtel.emit({
   severityNumber: logsAPI.SeverityNumber.INFO,
   severityText: "INFO",
@@ -73,16 +57,16 @@ loggerOtel.emit({
   attributes: { "log.type": "LogRecord" },
 });
 
+// Configuração do SDK do OpenTelemetry
 const sdk = new opentelemetry.NodeSDK({
   resource: resource,
   traceExporter: new OTLPTraceExporter({
-    url: `${URL}/v1/traces`,
+    url: `${OTLP_COLLECTOR_URL}/v1/traces`,
     headers: {},
   }),
-
   metricReader: new PeriodicExportingMetricReader({
     exporter: new OTLPMetricExporter({
-      url: `${URL}/v1/metrics`,
+      url: `${OTLP_COLLECTOR_URL}/v1/metrics`,
       headers: {},
     }),
   }),
@@ -92,5 +76,9 @@ const sdk = new opentelemetry.NodeSDK({
   ],
 });
 sdk.start();
+
+// Criação do logger Pino para uso
 const logger = pino();
+
+// Exporta os componentes necessários
 export default { sdk, logger };
