@@ -1,11 +1,11 @@
 FROM node:latest
 
-WORKDIR /app
+WORKDIR /usr/src/app
 
 COPY package*.json ./
 
-RUN npm install
+RUN npm install --verbose
 
 COPY . .
 
-CMD ["npx", "nodemon", "--exec", "npx", "ts-node", "app.ts"]
+CMD ["npx", "nodemon", "--exec", "npx", "ts-node", "./src/app.ts"]
