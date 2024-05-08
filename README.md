@@ -25,6 +25,10 @@ Certifique-se de configurar as credenciais adequadas para acessar esses serviço
 
 Contribuições são bem-vindas! Se você tiver sugestões de melhorias ou correções, sinta-se à vontade para abrir uma issue ou enviar um pull request.
 
+## Gravação de Logs
+
+Para gravar um log, chame a rota `http://localhost:8080/rolldice` na aplicação.
+
 ## Licença
 
 Este projeto está licenciado sob a [MIT License](LICENSE).
